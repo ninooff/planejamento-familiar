@@ -51,11 +51,11 @@ const Transaction = {
     expenses() {
         let expense = 0;
         //tipos
-        let food = 0;
-        let home = 0;
-        let products = 0;
-        let cosmetics = 0;
-        let others = 0;
+        let food = 0; let nFood = 0;
+        let home = 0; let nHome = 0;
+        let products = 0; let nProducts = 0;
+        let cosmetics = 0; let nCosmetics = 0;
+        let others = 0; let nOthers = 0;
 
         //pegar todas as transações, para cada transação
         Transaction.all.forEach(transaction => {
@@ -68,29 +68,33 @@ const Transaction = {
                 switch (tipo) {
                     case 'Outros' :
                         others += transaction.amount;
-                        
+                        nOthers = Utils.formatToGraph(others);
                         break;
 
                     case 'Cosméticos' :
                         cosmetics += transaction.amount;
+                        nCosmetics = Utils.formatToGraph(cosmetics);
                         break;
 
                     case 'Produtos' :
                         products += transaction.amount;
+                        nProducts = Utils.formatToGraph(products);
                         break;
 
                     case 'Alimentação' :
                         food += transaction.amount;
+                        nFood = Utils.formatToGraph(food);
                         break;
 
                     case 'Gastos domiciliares' :
                         home += transaction.amount;
+                        nHome = Utils.formatToGraph(home);
                         break;
                 }
             }
         })
         
-        return {expense, others, cosmetics, products, food, home}
+        return {expense, nOthers, nCosmetics, nProducts, nFood, nHome}
 
         },
 
@@ -108,7 +112,6 @@ const DOM = {
         tr.innerHTML = DOM.innerHTMLTransaction(transaction, index)
         tr.dataset.index = index
         DOM.transactionsContainer.appendChild(tr)
-        console.log(Transaction.expenses().others)
     },
 
 
@@ -147,7 +150,7 @@ const DOM = {
             getElementById('totalDisplay')
             //total
             .innerHTML = Utils.formatCurrency(Transaction.total())
-    },
+        },
 
     clearTransactions() {
         DOM.transactionsContainer.innerHTML = ""
@@ -155,6 +158,12 @@ const DOM = {
 }
 
 const Utils = {
+
+    formatToGraph(value){
+        value = String(value).replace(/\D/g, "")
+        value = Number(value) / 100
+        return value
+    },
 
     formatAmount(value) {
         value = value * 100
@@ -213,7 +222,7 @@ const Form = {
         let { description, amount, type, date } = Form.getValues()
         amount = Utils.formatAmount(amount)
         date = Utils.formatDate(date)
-
+        //type = Utils.formatAmount(type)
         return {
             description, amount, date, type
         }
@@ -227,7 +236,7 @@ const Form = {
         Form.description.value = ""
         Form.amount.value = ""
         Form.date.value = ""
-        Form.type.value = ""
+        //Form.type.value = ""
     },
 
     submit(event) {
@@ -249,10 +258,6 @@ const Form = {
         } catch (error) {
             alert(error.message)
         }
-
-
-
-
     },
 
 }
@@ -261,16 +266,16 @@ const Form = {
 function Graphic() {
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
-
+    
     function drawChart() {
 
       var data = google.visualization.arrayToDataTable([
         ['Setores', 'Gastos por Setores'],
-        ['Gastos domiciliares', (Transaction.expenses().home)*=-1],
-        ['Alimentação', (Transaction.expenses().food)*=-1],
-        ['Produtos', (Transaction.expenses().products)*=-1],
-        ['Cosméticos', (Transaction.expenses().cosmetics)*=-1],
-        ['Outros', (Transaction.expenses().others)*=-1]
+        ['Gastos domiciliares', (Transaction.expenses().nHome)],
+        ['Alimentação', (Transaction.expenses().nFood)],
+        ['Produtos', (Transaction.expenses().nProducts)],
+        ['Cosméticos', (Transaction.expenses().nCosmetics)],
+        ['Outros', (Transaction.expenses().nOthers)]
       ]);
 
       var options = {
@@ -294,7 +299,9 @@ const App = {
         Transaction.all.forEach(DOM.addTransaction)
 
         DOM.updateBalance()
+        
         Graphic()
+        
         Storage.set(Transaction.all)
 
     },
@@ -305,5 +312,6 @@ const App = {
         App.init()
     },
 }
+console.log(Transaction.expenses().nFood)   
 App.init()
 
