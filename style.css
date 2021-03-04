@@ -213,24 +213,6 @@ td.expense{
     z-index: 998;
 }
 
-.modal-options{
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .7);
-    position: fixed;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 999;
-}
-
-.modal-options.active{
-    opacity: 1;
-    visibility: visible;
-}
 
 .modal-overlay.active{
     opacity: 1;

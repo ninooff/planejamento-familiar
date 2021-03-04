@@ -5,8 +5,8 @@ const Modal = {
     },
     close() {
         document.querySelector('.modal-overlay')
-            .classList.remove('active')
-    }
+            .classList.remove('active')    
+        },
 }
 
 const Storage = {
@@ -33,15 +33,18 @@ const Transaction = {
         App.reload()
     },
 
-    // somar as entradas
+    // somar as entradas; adicionar os types
     incomes() {
         let income = 0;
         //pegar todas as transações, para cada transação
         Transaction.all.forEach(transaction => {
+            let tipo = transaction.type
             //se ela for > 0 
-            if (transaction.amount > 0) {
+            if (tipo == 'Salário' || tipo == 'Investimentos') {
                 //somar a uma variavel e retornar variavel
                 income += transaction.amount
+            }else{
+                console.log('entrou no lugar errado2')
             }
         })
         return income
@@ -59,12 +62,13 @@ const Transaction = {
 
         //pegar todas as transações, para cada transação
         Transaction.all.forEach(transaction => {
+            let tipo = transaction.type
             //se ela for < 0 
-            if (transaction.amount < 0) {
+            //transaction.amount < 0)
+            if (tipo == 'Outros' || tipo == 'Cosméticos') {
                 //somar a uma variavel e retornar variavel
-                expense += transaction.amount
-
-                let tipo = transaction.type
+                expense -= transaction.amount
+                //let tipo = transaction.type
                 switch (tipo) {
                     case 'Outros' :
                         others += transaction.amount;
@@ -91,6 +95,8 @@ const Transaction = {
                         nHome = Utils.formatToGraph(home);
                         break;
                 }
+            }else{
+                console.log('entrou no lugar errado')
             }
         })
         
@@ -117,7 +123,8 @@ const DOM = {
 
     
     innerHTMLTransaction(transaction, index) {
-        const CSSclass = transaction.amount > 0 ? "income" : "expense";
+        //const CSSclass = transaction.amount > 0 ? "income" : "expense";
+        const CSSclass = transaction.type == 'Investimentos' ||  transaction.type == 'Salário' ? "income" : "expense";
 
         const amount = Utils.formatCurrency(transaction.amount)
 
@@ -236,7 +243,7 @@ const Form = {
         Form.description.value = ""
         Form.amount.value = ""
         Form.date.value = ""
-        //Form.type.value = ""
+        Form.type.value = ""
     },
 
     submit(event) {
