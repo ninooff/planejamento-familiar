@@ -1,3 +1,4 @@
+var typeOfTransacion = '';
 const Modal = {
     open() {
         document.querySelector('.modal-overlay')
@@ -6,6 +7,14 @@ const Modal = {
     close() {
         document.querySelector('.modal-overlay')
             .classList.remove('active')
+    },
+    in(){
+        console.log("entrei")
+        typeOfTransacion = 'in'
+    },
+    out(){
+        console.log("sai")
+        typeOfTransacion = 'out'
     }
 }
 
@@ -49,6 +58,7 @@ const Transaction = {
 
     // somar as saidas; adicionar os types
     expenses() {
+        console.log(typeOfTransacion)
         let expense = 0;
         //tipos
         let food = 0; let nFood = 0;
@@ -236,7 +246,7 @@ const Form = {
         Form.description.value = ""
         Form.amount.value = ""
         Form.date.value = ""
-        //Form.type.value = ""
+        Form.type.value = ""
     },
 
     submit(event) {

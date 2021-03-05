@@ -38,12 +38,29 @@ html{
 }
 
 /* Titles*/
-h2{
+.entries {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;/*repeat(7, 1fr)*/
+    gap: 1rem;
+    text-align: center;
+    justify-content: space-between;
+    align-content: center;
+    margin-bottom: 1rem;
+}
+/* mudar isso*/
+
+
+.entries h2{
     margin-top: 3.2rem;
     margin-bottom: 0.8rem;
     color: var(--dark-blue);
     font-weight: normal;
+    /**/
+    justify-content: space-between;
+    /*padding: 0 8rem ;*/
+
 }
+
 
 /* Links e Buttons*/
 a{
@@ -66,6 +83,22 @@ button{
     cursor: pointer;
 }
 
+.entries button {
+    background: #f0f2f5;
+    color: var(--dark-blue);
+    font-weight: normal;
+
+    padding: 0.5rem;
+    display: flex;
+    text-align: center;
+    align-content: center;
+
+}
+
+.entries button:hover {
+    background: rgba(0, 0, 0, .3);
+}
+
 button:hover{
     background: var(--lightgreen);
 }
@@ -74,6 +107,7 @@ button:hover{
     display: inline-block;
     margin-bottom: .8rem;
 }
+
 
 .button.cancel{
     color: #e92929;
@@ -213,24 +247,6 @@ td.expense{
     z-index: 998;
 }
 
-.modal-options{
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .7);
-    position: fixed;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 999;
-}
-
-.modal-options.active{
-    opacity: 1;
-    visibility: visible;
-}
 
 .modal-overlay.active{
     opacity: 1;

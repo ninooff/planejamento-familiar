@@ -79,7 +79,12 @@
     <div class="modal-overlay">
         <div class="modal">
             <div id="form">
-                <h2>Nova Transação</h2>
+                <div class="entries">
+                    <h2>Nova Transação </h2>  
+                    <div></div>  
+                    <button>Entrada<img onclick="Modal.in()" src="./assets/income.svg" alt="nova entrada"></button>
+                    <button>Saída<img onclick="Modal.out()" src="./assets/expense.svg" alt="nova saída"></button>   
+                </div> 
                 <form action="" onsubmit="Form.submit(event)">
                     <div class="input-group">
                         <label class="sr-only" for="description" >Descrição</label>
