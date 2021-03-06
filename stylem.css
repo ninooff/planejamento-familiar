@@ -30,6 +30,7 @@ html{
     clip: rect(0,0,0,0);
     white-space: nowrap;
     border-width: 0;
+    
 }
 
 .container{
@@ -277,8 +278,16 @@ input{
 }
 
 .input-group{
-    margin-top: 0.8rem;
+    margin-top: 0.8rem;  
+  
 }
+
+/*new*/
+.input-group.disabled{
+    pointer-events:none;
+    outline:none;
+}
+
 
 .input-group .help{
     opacity: 0.4;

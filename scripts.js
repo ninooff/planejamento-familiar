@@ -7,19 +7,47 @@ const Modal = {
     close() {
         document.querySelector('.modal-overlay')
             .classList.remove('active')
+
+        let enabled = document.querySelectorAll('.input-group')
+        for (let i = 0; i < 3; i++) {
+            enabled[i].classList.add('disabled')
+        }
+
+       document.querySelector(".input-group-out")
+            .setAttribute('hidden', 'true')
+        document.querySelector(".input-group-in")
+            .setAttribute('hidden', 'true')
     },
-    in(){
-        console.log("entrei")
+    in() {
+        let enabled = document.querySelectorAll('.input-group')
+        for (let i = 0; i < 3; i++) {
+            enabled[i].classList.remove('disabled')
+        }
+
+        document.querySelector(".input-group-out")
+            .setAttribute('hidden', 'true')
+        document.querySelector(".input-group-in")
+            .removeAttribute('hidden')
+        
         typeOfTransacion = 'in'
     },
-    out(){
-        console.log("sai")
+    out() {
+        let enabled = document.querySelectorAll('.input-group')
+        for (let i = 0; i < 3; i++) {
+            enabled[i].classList.remove('disabled')
+        }
+
+        document.querySelector(".input-group-in")
+        .setAttribute('hidden','true')
+        document.querySelector(".input-group-out")
+            .removeAttribute('hidden')
+
         typeOfTransacion = 'out'
     }
 }
 
 const Storage = {
-    get(){
+    get() {
         return JSON.parse(localStorage.getItem("dev.finances:transactions")) || []
     },
 
@@ -31,13 +59,13 @@ const Storage = {
 const Transaction = {
     all: Storage.get(),
 
-    add(transaction){
+    add(transaction) {
         Transaction.all.push(transaction)
 
         App.reload()
     },
 
-    remove(index){
+    remove(index) {
         Transaction.all.splice(index, 1)
         App.reload()
     },
@@ -69,49 +97,50 @@ const Transaction = {
 
         //pegar todas as transações, para cada transação
         Transaction.all.forEach(transaction => {
-            //se ela for < 0 
+            //se ela for < 0 typeOfTransacion == 'out'
+            //se for out faz;transaction.amount < 0
             if (transaction.amount < 0) {
                 //somar a uma variavel e retornar variavel
                 expense += transaction.amount
 
                 let tipo = transaction.type
                 switch (tipo) {
-                    case 'Outros' :
+                    case 'Outros':
                         others += transaction.amount;
                         nOthers = Utils.formatToGraph(others);
                         break;
 
-                    case 'Cosméticos' :
+                    case 'Cosméticos':
                         cosmetics += transaction.amount;
                         nCosmetics = Utils.formatToGraph(cosmetics);
                         break;
 
-                    case 'Produtos' :
+                    case 'Produtos':
                         products += transaction.amount;
                         nProducts = Utils.formatToGraph(products);
                         break;
 
-                    case 'Alimentação' :
+                    case 'Alimentação':
                         food += transaction.amount;
                         nFood = Utils.formatToGraph(food);
                         break;
 
-                    case 'Gastos domiciliares' :
+                    case 'Gastos domiciliares':
                         home += transaction.amount;
                         nHome = Utils.formatToGraph(home);
                         break;
                 }
             }
         })
-        
-        return {expense, nOthers, nCosmetics, nProducts, nFood, nHome}
 
-        },
+        return { expense, nOthers, nCosmetics, nProducts, nFood, nHome }
+
+    },
 
     //entradas - saidas
     total() {
         return Transaction.incomes() + Transaction.expenses().expense
-    },    
+    },
 }
 
 const DOM = {
@@ -125,10 +154,10 @@ const DOM = {
     },
 
 
-    
+
     innerHTMLTransaction(transaction, index) {
         const CSSclass = transaction.amount > 0 ? "income" : "expense";
-
+        //let transactionType = typeOfTransacion == 'in' ? "transaction.typeIn"
         const amount = Utils.formatCurrency(transaction.amount)
 
         const html = `
@@ -142,7 +171,7 @@ const DOM = {
             </td>
         
         `
-       
+
 
         return html
     },
@@ -160,7 +189,7 @@ const DOM = {
             getElementById('totalDisplay')
             //total
             .innerHTML = Utils.formatCurrency(Transaction.total())
-        },
+    },
 
     clearTransactions() {
         DOM.transactionsContainer.innerHTML = ""
@@ -169,7 +198,7 @@ const DOM = {
 
 const Utils = {
 
-    formatToGraph(value){
+    formatToGraph(value) {
         value = String(value).replace(/\D/g, "")
         value = Number(value) / 100
         return value
@@ -221,8 +250,8 @@ const Form = {
 
     validateFields() {
         const { description, amount, date, type } = Form.getValues();
-        
-        if (description.trim() === "" || amount.trim() === "" || date.trim() === "" || type.trim() === "") {
+
+        if (description.trim() === "" || amount.trim() === "" || date.trim() === "" ) {
             throw new Error("Por favor, preencha todos os campos")
         }
 
@@ -274,54 +303,54 @@ const Form = {
 
 
 function Graphic() {
-    if(Transaction.expenses().expense == 0 ){
+    if (Transaction.expenses().expense == 0) {
         zeroGraphic()
-    }else{
-        google.charts.load('current', {'packages':['corechart']});
+    } else {
+        google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
-        
+
         function drawChart() {
-    
-          var data = google.visualization.arrayToDataTable([
-            ['Setores', 'Gastos por Setores'],
-            ['Gastos domiciliares', (Transaction.expenses().nHome)],
-            ['Alimentação', (Transaction.expenses().nFood)],
-            ['Produtos', (Transaction.expenses().nProducts)],
-            ['Cosméticos', (Transaction.expenses().nCosmetics)],
-            ['Outros', (Transaction.expenses().nOthers)]
-          ]);
-    
-          var options = {
-            title: 'Onde mais gastei:'
-          };
-    
-          var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-    
-          chart.draw(data, options);
+
+            var data = google.visualization.arrayToDataTable([
+                ['Setores', 'Gastos por Setores'],
+                ['Gastos domiciliares', (Transaction.expenses().nHome)],
+                ['Alimentação', (Transaction.expenses().nFood)],
+                ['Produtos', (Transaction.expenses().nProducts)],
+                ['Cosméticos', (Transaction.expenses().nCosmetics)],
+                ['Outros', (Transaction.expenses().nOthers)]
+            ]);
+
+            var options = {
+                title: 'Onde mais gastei:'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
         }
     }
-    
- }
 
-function zeroGraphic() { 
-    google.charts.load('current', {'packages':['corechart']});
+}
+
+function zeroGraphic() {
+    google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
-    
+
     function drawChart() {
 
-      var data = google.visualization.arrayToDataTable([
-        ['Setores', 'Gastos por Setores'],
-        ['Insira um novo gasto', 100 ],
-        ['No botão nova transação', 100]
-      ]);
+        var data = google.visualization.arrayToDataTable([
+            ['Setores', 'Gastos por Setores'],
+            ['Insira um novo gasto', 100],
+            ['No botão nova transação', 100]
+        ]);
 
-      var options = {
-        title: 'Onde mais gastei:'
-      };
+        var options = {
+            title: 'Onde mais gastei:'
+        };
 
-      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-      chart.draw(data, options);
+        chart.draw(data, options);
     }
 }
 
@@ -338,9 +367,9 @@ const App = {
         Transaction.all.forEach(DOM.addTransaction)
 
         DOM.updateBalance()
-        
+
         Graphic()
-        
+
         Storage.set(Transaction.all)
 
     },
