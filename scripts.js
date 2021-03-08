@@ -1,4 +1,4 @@
-var typeOfTransacion = '';
+
 const Modal = {
     open() {
         document.querySelector('.modal-overlay')
@@ -9,6 +9,7 @@ const Modal = {
             .classList.remove('active')
 
         let enabled = document.querySelectorAll('.input-group')
+      
         for (let i = 0; i < 3; i++) {
             enabled[i].classList.add('disabled')
         }
@@ -19,6 +20,7 @@ const Modal = {
             .setAttribute('hidden', 'true')
     },
     in() {
+        Form.clearFields();
         let enabled = document.querySelectorAll('.input-group')
         for (let i = 0; i < 3; i++) {
             enabled[i].classList.remove('disabled')
@@ -29,9 +31,9 @@ const Modal = {
         document.querySelector(".input-group-in")
             .removeAttribute('hidden')
         
-        typeOfTransacion = 'in'
     },
     out() {
+        Form.clearFields();
         let enabled = document.querySelectorAll('.input-group')
         for (let i = 0; i < 3; i++) {
             enabled[i].classList.remove('disabled')
@@ -42,8 +44,8 @@ const Modal = {
         document.querySelector(".input-group-out")
             .removeAttribute('hidden')
 
-        typeOfTransacion = 'out'
-    }
+    },
+    
 }
 
 const Storage = {
@@ -76,8 +78,12 @@ const Transaction = {
         //pegar todas as transações, para cada transação
         Transaction.all.forEach(transaction => {
             //se ela for > 0 
-            if (transaction.amount > 0) {
+            /*if (transaction.amount > 0) {
                 //somar a uma variavel e retornar variavel
+                income += transaction.amount
+            }*/
+            if(transaction.typeOut == ""){
+                console.log('income')
                 income += transaction.amount
             }
         })
@@ -86,7 +92,6 @@ const Transaction = {
 
     // somar as saidas; adicionar os types
     expenses() {
-        console.log(typeOfTransacion)
         let expense = 0;
         //tipos
         let food = 0; let nFood = 0;
@@ -97,13 +102,9 @@ const Transaction = {
 
         //pegar todas as transações, para cada transação
         Transaction.all.forEach(transaction => {
-            //se ela for < 0 typeOfTransacion == 'out'
-            //se for out faz;transaction.amount < 0
-            if (transaction.amount < 0) {
-                //somar a uma variavel e retornar variavel
-                expense += transaction.amount
-
-                let tipo = transaction.type
+            if (transaction.typeIn == "" || transaction.amount < 0) {
+                expense -= Math.abs(transaction.amount)
+                let tipo = transaction.typeOut
                 switch (tipo) {
                     case 'Outros':
                         others += transaction.amount;
@@ -154,17 +155,25 @@ const DOM = {
     },
 
 
-
+//mudar aqui
     innerHTMLTransaction(transaction, index) {
-        const CSSclass = transaction.amount > 0 ? "income" : "expense";
-        //let transactionType = typeOfTransacion == 'in' ? "transaction.typeIn"
+        let type
+        let CSSclass = ''
+        if(transaction.typeOut == ""){
+            CSSclass = "income"
+            type = transaction.typeIn
+        }else{
+            CSSclass = "expense"
+            type = transaction.typeOut
+        }
+        
         const amount = Utils.formatCurrency(transaction.amount)
 
         const html = `
        
             <td class="description">${transaction.description}</td>
             <td class="${CSSclass}">${amount}</td>
-            <td class="type">${transaction.type}</td>
+            <td class="type-in">${type}</td>
             <td class="date">${transaction.date}</td>
             <td>
                 <img onclick="Transaction.remove(${index})"src="./assets/minus.svg" alt="Remover Transação">
@@ -233,10 +242,10 @@ const Utils = {
 }
 
 const Form = {
-
     description: document.querySelector('input#description'),
     amount: document.querySelector('input#amount'),
-    type: document.querySelector('input#type'),
+    typeIn: document.querySelector('input#type-in'),
+    typeOut: document.querySelector('input#type-out'),
     date: document.querySelector('input#date'),
 
     getValues() {
@@ -244,26 +253,27 @@ const Form = {
             description: Form.description.value,
             amount: Form.amount.value,
             date: Form.date.value,
-            type: Form.type.value,
+            typeIn: Form.typeIn.value,
+            typeOut: Form.typeOut.value,
         }
     },
 
     validateFields() {
-        const { description, amount, date, type } = Form.getValues();
+        const { description, amount, date, typeIn, typeOut } = Form.getValues();
 
-        if (description.trim() === "" || amount.trim() === "" || date.trim() === "" ) {
+        if (description.trim() === "" || amount.trim() === "" || date.trim() === "" || typeIn.trim() === "" && typeOut.trim() === "" ) {
             throw new Error("Por favor, preencha todos os campos")
         }
 
     },
 
     formatValues() {
-        let { description, amount, type, date } = Form.getValues()
+        let { description, amount, typeIn, typeOut, date } = Form.getValues()
         amount = Utils.formatAmount(amount)
         date = Utils.formatDate(date)
         //type = Utils.formatAmount(type)
         return {
-            description, amount, date, type
+            description, amount, date, typeIn, typeOut
         }
     },
 
@@ -275,7 +285,8 @@ const Form = {
         Form.description.value = ""
         Form.amount.value = ""
         Form.date.value = ""
-        Form.type.value = ""
+        Form.typeIn.value = ""
+        Form.typeOut.value = ""
     },
 
     submit(event) {
