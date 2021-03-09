@@ -289,12 +289,17 @@ input{
 }
 
 .recado{
-    pointer-events:none;
+    color: var(--dark-blue);
     position: absolute;
     right: 1rem;
     text-align: center;
     align-content: center;
     justify-content: center;
+    opacity: 0.7;
+}
+
+.recado:hover{
+    opacity: 1;
 }
 
 .recado.disabled{
