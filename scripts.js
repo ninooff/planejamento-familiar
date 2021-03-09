@@ -9,15 +9,19 @@ const Modal = {
             .classList.remove('active')
 
         let enabled = document.querySelectorAll('.input-group')
-      
+
         for (let i = 0; i < 3; i++) {
             enabled[i].classList.add('disabled')
         }
 
-       document.querySelector(".input-group-out")
+        document.querySelector(".input-group-out")
             .setAttribute('hidden', 'true')
+
         document.querySelector(".input-group-in")
             .setAttribute('hidden', 'true')
+
+        document.querySelector(".recado")
+            .classList.remove('disabled')
     },
     in() {
         Form.clearFields();
@@ -30,7 +34,9 @@ const Modal = {
             .setAttribute('hidden', 'true')
         document.querySelector(".input-group-in")
             .removeAttribute('hidden')
-        
+        document.querySelector(".recado")
+            .classList.add('disabled')
+
     },
     out() {
         Form.clearFields();
@@ -40,12 +46,13 @@ const Modal = {
         }
 
         document.querySelector(".input-group-in")
-        .setAttribute('hidden','true')
+            .setAttribute('hidden', 'true')
         document.querySelector(".input-group-out")
             .removeAttribute('hidden')
+        document.querySelector(".recado")
+            .classList.add('disabled')
 
     },
-    
 }
 
 const Storage = {
@@ -82,7 +89,7 @@ const Transaction = {
                 //somar a uma variavel e retornar variavel
                 income += transaction.amount
             }*/
-            if(transaction.typeOut == ""){
+            if (transaction.typeOut == "") {
                 console.log('income')
                 income += transaction.amount
             }
@@ -155,18 +162,18 @@ const DOM = {
     },
 
 
-//mudar aqui
+    //mudar aqui
     innerHTMLTransaction(transaction, index) {
         let type
         let CSSclass = ''
-        if(transaction.typeOut == ""){
+        if (transaction.typeOut == "") {
             CSSclass = "income"
             type = transaction.typeIn
-        }else{
+        } else {
             CSSclass = "expense"
             type = transaction.typeOut
         }
-        
+
         const amount = Utils.formatCurrency(transaction.amount)
 
         const html = `
@@ -261,7 +268,7 @@ const Form = {
     validateFields() {
         const { description, amount, date, typeIn, typeOut } = Form.getValues();
 
-        if (description.trim() === "" || amount.trim() === "" || date.trim() === "" || typeIn.trim() === "" && typeOut.trim() === "" ) {
+        if (description.trim() === "" || amount.trim() === "" || date.trim() === "" || typeIn.trim() === "" && typeOut.trim() === "") {
             throw new Error("Por favor, preencha todos os campos")
         }
 

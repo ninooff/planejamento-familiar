@@ -288,6 +288,18 @@ input{
     outline:none;
 }
 
+.recado{
+    pointer-events:none;
+    position: absolute;
+    right: 1rem;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.recado.disabled{
+    visibility: hidden;
+}
 
 .input-group .help{
     opacity: 0.4;
