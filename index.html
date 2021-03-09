@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dev.finance$</title>
+    <title>balanço financeiro$</title>
     <link rel="stylesheet" href="./stylem.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,400;0,700;1,100;1,400;1,700&display=swap" rel="stylesheet">
@@ -14,14 +14,14 @@
 
 <body>
     <header>
-        <img src="./assets/logo.svg" alt="Logo Dev Finance">
+        <img src="./assets/logopf.svg" alt="Logo Balanço Financeiro">
     </header>
 
     <main class="container">
         <section id="balance">
 
             <h2 class="sr-only">Balanço</h2>
-            <div class="card">
+            <div class="card" onclick="Modal.open(),Modal.in()">
                 <h3>
                     <span>Entradas</span> 
                     <img src="./assets/income.svg" alt="imagem de entradas">
@@ -29,7 +29,7 @@
                 <p id="incomeDisplay">R$ 0,00</p>
             </div>
 
-            <div class="card">
+            <div class="card" onclick="Modal.open(),Modal.out()">
                 <h3>
                     <span>Saídas</span> 
                     <img src="./assets/expense.svg" alt="imagem de saídas">
@@ -144,7 +144,7 @@
     </div>
 
     <footer>
-        <p>dev.finance$</p>
+        <p>balanço financeiro$</p>
     </footer>
 
     <script src="./scripts.js">
@@ -152,5 +152,5 @@
     </script>
 
 </body>
-<!-- https://maratonadiscover.rocketseat.com.br/maratona/aula-01 01:50-->
+
 </html>
